@@ -138,6 +138,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Site ID for django.contrib.sites
 SITE_ID = 1
 
+# Custom User Model
+AUTH_USER_MODEL = 'authentication.User'
+
 # REST Framework configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

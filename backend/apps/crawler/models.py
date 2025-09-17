@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import URLValidator
+from django.utils import timezone
 import json
 
 User = get_user_model()
@@ -132,7 +133,7 @@ class CrawlJob(models.Model):
     error_message = models.TextField(blank=True)
     
     # Metadata
-    triggered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    triggered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='triggered_crawl_jobs')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -195,7 +196,7 @@ class CrawledContent(models.Model):
     extracted_metadata = models.JSONField(default=dict, blank=True)
     
     # Processing information
-    processed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    processed_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='processed_crawled_content')
     processed_at = models.DateTimeField(null=True, blank=True)
     blog_post = models.ForeignKey('blog.Post', on_delete=models.SET_NULL, null=True, blank=True)
     
@@ -227,7 +228,7 @@ class CrawlSchedule(models.Model):
     """
     Scheduled crawl tasks using django-celery-beat.
     """
-    source = models.OneToOneField(CrawlSource, on_delete=models.CASCADE, related_name='schedule')
+    source = models.OneToOneField(CrawlSource, on_delete=models.CASCADE, related_name='crawl_schedule')
     celery_task_id = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     
